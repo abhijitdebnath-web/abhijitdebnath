@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Abhijit Debnath</title> 
+<meta name="description" content="Abhijit Debnath এর AI চালিত ভিডিও সার্চ প্ল্যাটফর্ম। Facebook, YouTube, Google ও অন্যান্য টেক টিউটোরিয়াল ভিডিও খুঁজুন। ভুল বানান বা যেকোনো ভাষায় সার্চ করলেও নির্ভুল ফল পান।" />
+<link rel="canonical" href="https://yourwebsite.com/index.html" />
+
+<style>
+  :root{
+    --accent:#0055ff;
+    --accent2:#00c6ff;
+    --bg:#f3f7fb;
+    --card:#fff;
+    --sub-color1: rgb(255, 105, 180);
+    --sub-color2: rgb(255, 20, 147);
+    --highlight-bg: #fffb8f; /* হাইলাইট ব্যাকগ্রাউন্ড */
+    --highlight-color: #000;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family:Inter,Arial;
+    background:var(--bg);
+    color:#111;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-moz-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  header{
+    position:sticky;
+    top:0;
+    z-index:999;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:14px 18px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#fff;
+  }
+  header img{ width:52px;height:52px;border-radius:50%;object-fit:cover; }
+
+  /* SEARCH BAR FULL WIDTH */
+  .search-wrap{
+    width:100%;
+    position:sticky;
+    top:70px;
+    z-index:900;
+    background:#fff;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.1);
+  }
+
+  .search-icon{ font-size:22px; animation: float 1.4s infinite ease-in-out; }
+  @keyframes float{ 0%{transform:translateX(0);} 50%{transform:translateX(5px) translateY(-2px);} 100%{transform:translateX(0);} }
+  .search-wrap:focus-within .search-icon { transform: none; animation: float 1.4s infinite ease-in-out;
+  height:10px;
+    
+  }
+
+  #search{ flex:1; padding:13px 15px; border-radius:10px; border:1px solid #d0d7ff; font-size:16px; transition:border-color 0.3s; }
+  #search:focus{ border-color:var(--accent); outline:none; }
+
+  #searchBtn { background: var(--accent); border: none; border-radius: 50%; width: 35px; height: 35px; color: white; font-size: 18px; cursor: pointer; flex-shrink: 0; }
+  #searchBtn.loading { animation: spin 1s infinite linear; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .meta{ font-size:13px; color:#555; min-width:110px; text-align:right; }
+
+  /* PAGE CONTAINER */
+  .container{ width:95%; max-width:960px; margin:25px auto 80px; }
+
+  /* YOUTUBE/SUBSCRIBE ROW */
+  .youtube-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+  
+  .yt-box-visit{ text-align:center; animation: floatMove 2s infinite ease-in-out; transition:0.4s; flex-shrink: 0; flex-grow: 1; min-width: 150px;
+  
+    
+    
+    
+  }
+  
+  @keyframes floatMove { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+
+  .yt-btn-visit{ display:inline-block; background:#ff0000; color:#fff; padding:12px 22px; border-radius:8px; font-size:18px; font-weight:600; text-decoration:none; box-shadow:0 4px 10px rgba(0,0,0,0.20); transition:0.25s; 
+  
+  
+  
+    display:inline-block;
+  }
+  .yt-btn-visit:hover{ background:#d90000; transform:scale(1.08); }
+
+  .subscribe-box { flex-shrink: 0; flex-grow: 1; min-width: 150px; }
+  #subscribe-btn { display: block; padding: 12px 18px; border-radius: 10px; font-size: 18px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; background-color: var(--sub-color1); color: rgb(0,40,43); text-align: center; box-shadow: 0px 0px 20px rgba(255, 105, 180, 0.7); animation-duration: 1s; animation-iteration-count: infinite; animation-name: cc; transition: transform 0.2s; }
+  .subscribe-btn:hover { transform: scale(1.05); }
+  @keyframes cc { 0% { transform: scale(1); box-shadow: 0px 0px 15px var(--sub-color1); } 50% { transform: scale(1.05); box-shadow: 0px 0px 30px var(--sub-color2); } 100% { transform: scale(1); box-shadow: 0px 0px 15px var(--sub-color1); } }
+
+  .ad{ height:110px; background:#ffe48a; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:600; margin-bottom:15px; }
+
+  /* VIDEO LIST */
+  .videos{ display:flex; flex-direction:column; gap:18px; }
+
+  /* VIDEO CARD */
+  .video-card{ background:#fff; padding:15px; border-radius:12px; box-shadow:0 12px 40px rgba(3,10,36,0.1); opacity:0; transform:translateY(35px); transition:all .55s ease; cursor:default; }
+  .video-card.visible{ opacity:1; transform:translateY(0); }
+  .video-title{ font-size:19px;font-weight:700;margin-bottom:8px; }
+  .video-desc{ color:#444;font-size:14px;margin-bottom:10px; }
+  .seo{ font-size:12px;color:#666;margin-bottom:10px; }
+
+  .video-placeholder { position: relative; width: 100%; height: 360px; border-radius: 10px; background: #000; cursor: pointer; overflow: hidden; transition: box-shadow 0.3s; }
+  .video-placeholder:hover { box-shadow: 0 0 0 4px var(--accent); }
+  .video-placeholder img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
+  .video-placeholder:hover img { opacity: 0.8; }
+  .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: radial-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2)); border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 10; }
+  .play-button::before { content: "▶"; font-size: 30px; color: #fff; margin-left: 5px; }
+
+  .video-frame{ width:100%; height:360px; border-radius:10px; background:#000; border:0; }
+
+  /* highlight span style */
+  .match { background: var(--highlight-bg); color: var(--highlight-color); padding: 2px 4px; border-radius:4px; font-weight:700; }
+
+  @media(max-width:720px){ .video-placeholder, .video-frame{ height:220px; } #search{ font-size:15px; } .play-button { width: 60px; height: 60px; } .play-button::before { font-size: 20px; } .youtube-row { flex-direction: column; gap: 10px; } .yt-box-visit, .subscribe-box { width: 100%; max-width: 100%; margin: 0; } .subscribe-btn, .yt-btn-visit { width: 100%; } }
+
+  footer{ text-align:center; padding:18px; margin:20px; background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; border-radius:8px; }
+
+  /* small highlight effect for matched card */
+  .card-match { border: 2px solid rgba(0,162,255,0.22); background: rgba(230,249,255,0.7); transition: background 400ms ease; }
+</style>
+</head>
+<body>
+ 
+  
+  
+  
+<header>
+ <a href="https://www.youtube.com/@AbhijitDebnathviral" style="border-radius:100%;background:#1acc00">
+   <img src="1122.jpg" alt="logo" style="height:100;weight:100;display:flex;">
+ </a>
+  <div>
+    <h2 style="margin:0;font-size:18px;">Abhijit Debnath</h2>
+    <small>Tech • Facebook • YouTube Tutorials</small>
+  </div>
+</header>
+
+<form class="search-wrap" onsubmit="handleSearch(event); return false;" role="search">
+  <div class="search-icon" >🔍</div>
+  <input id="search" placeholder="Search videos (AI Powered)..." autocomplete="off" aria-label="Search videos"/>
+  <button type="submit" id="searchBtn">✓</button>
+  <div class="meta" id="metaInfo">Loading…</div>
+</form>
+
+
+
+
+<style>
+
+/* ____header and search bar fixt tag ____*/
+    /* Search area */
+    .search-area{
+      width:100%;
+      background:#ffffff;
+      padding:14px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.06);
+      position:sticky;
+      top:76px; /* header height fallback */
+      z-index:90;
+    }
+    #search{
+  
+    /* ________change width --scarch bar--(smal or dig)_________*/
+    
+   /*______   width 200 এর ভিতরে থাকলে search bar আর header জাগায় থাকবে , না হলে Scroll করলে উঠে যাবে________*/
+      width:210px;
+      padding:12px 14px;
+      border-radius:8px;
+      border:2px solid var(--accent);
+      font-size:16px;
+      outline:none;
+    }
+    </style>
+
+
+
+
+
+
+<div class="container">
+
+<div id="youtube-row">
+  <div id="yt-box-visit">
+    <a id="yt-btn-visit" href="https://www.youtube.com/@AbhijitDebnathviral" target="_blank">
+      🔴 visit our channel
+    </a>
+  </div>
+
+  <div id="subscribe-box">
+    <a id="subscribe-btn" href="https://www.youtube.com/@AbhijitDebnathviral?sub_confirmation=1" target="_blank">
+      ★ SUBSCRIBE
+    </a>
+  </div>
+</div>
+
+<style>
+#youtube-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin:20px 0;
+  flex-wrap:wrap;
+}
+
+#yt-box-visit{text-align:center;animation: floatMove 2s infinite ease-in-out;}
+@keyframes floatMove{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+  100%{transform:translateY(0);}
+}
+
+#yt-btn-visit{
+  background:#ff0000;
+  color:#fff;
+  padding:12px 22px;
+  border-radius:8px;
+  font-size:18px;
+  font-weight:600;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.subscribe-box{}
+#subscribe-btn{
+  display:block;
+  padding:12px 18px;
+  border-radius:10px;
+  background:var(--sub-color1);
+  color:#00282b;
+  box-shadow:0 0 20px rgba(255,105,180,0.7);
+  font-size:18px;
+  font-weight:700;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+
+
+
+
+<button onclick="goBackPerfect()" class="back-inline">← Back</button>
+
+
+
+
+<style>
+.back-inline{ position: fixed; top: 170px; left:5px; z-index: 3000; background: #000; color: #fff; padding: 10px 18px; border-radius: 30px; font-size: 10px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+</style>
+
+  <div id="loadingMessage" style="text-align:center; padding:15px; color:#555; display:none;">🧠 AI is searching...</div>
+  <div id="videos" class="videos"></div>
+  <div class="ad">Your Ad Here</div>
+</div>
+
+<footer>© 2025 Abhijit Debnath — All Rights Reserved</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script>
+/* ================== YOUR VIDEO LIST =================== */
+const videosData = [
+  {
+    title: "Google 2-Step Verification On Kaise Kare",
+    desc: "Full guide to secure your Google account.",
+    keywords: "google 2 step verification secure account password change",
+    youtubeId: "6Gkx9nk2Xko"
+  },
+  {
+    title: "Facebook Page Par Video Upload Kaise Kare",
+    desc: "Full tutorial to upload videos on FB Page.",
+    keywords: "facebook page video upload post reel page settings",
+    youtubeId: "sJnt1eGppR0"
+  },
+  {
+    title: "WhatsApp Channel Followers Kaise Badaye",
+    desc: "Tips & tricks to grow followers on your WhatsApp Channel quickly and organically.",
+    keywords: "whatsapp channel growth, whatsapp followers, channel tips",
+    youtubeId: "vB-Bw_6uJ8g"
+  }
+];
+
+/* ============== phonetic & normalize (All Languages - সংশোধিত) ============== */
+const phoneticMap = [
+  // ⭐ ১. শব্দভিত্তিক সংশোধন (Word-based Fixes - আপনার পূর্বের সব এন্ট্রি এখানে আছে)
+  {from:/কিভাবে|কীভাবে|कैसे|kaise|kivabe|kivabo|kaisha/g, to:"kaise"},
+  {from:/কেন|kyn/g, to:"kene"},
+  {from:/পরিবর্তন|পরিবর্তন করুন|পরিবর্তন করতে|बदल|बदलें|बदलना|change|chang|badal|badlo/g, to:"change"},
+  {from:/পাসওয়র্ড|পাসওয়ার্ড|পাসওর্ড|पासवर्ड|password|pass|passwd|pasword|paswrd/g, to:"password"},
+  {from:/লগইন|লগ ইন|login|log in/g, to:"login"},
+  {from:/ভিডিও|video|vidio|वीडियो|vdo|bideo/g, to:"video"},
+  {from:/আপলোড|अपलोड|upload|uplod|uplaod/g, to:"upload"},
+  {from:/ফেসবুক|ফেইসবুক|fb|facebook|fcebook/g, to:"facebook"},
+  {from:/গুগল|গুগোল|google|gugol|gugl|gogle|gogl/g, to:"google"},
+  {from:/ইউটিউব|youtube|yt|yutube|youtub/g, to:"youtube"},
+  {from:/किस/g, to:"kis"},
+  {from:/acount|aaccound|aakount|akount/g, to:"account"}, 
+  {from:/sating|seting|sattings/g, to:"settings"}, 
+  
+  // ⭐ ২. উন্নত অক্ষরভিত্তিক সংশোধন (Devanagari, Bengali, Latin - Combined and Improved)
+  
+  // স্বরবর্ণ ও কার চিহ্ন (Vowels)
+  {from:/অ|ও|ও|এ|া|আ|অা|অো|অৌ|ओ|ओ|a|aa|ou|ao/g, to:"a"}, 
+  {from:/ই|ি|ঈ|ী|ए|ए|i|ee|y/g, to:"i"}, 
+  {from:/উ|ু|ঊ|ূ|ओ|ओ|u|oo/g, to:"u"}, 
+  {from:/ऐ|e|ei|ey/g, to:"e"}, // Ai/E sound
+  {from:/औ|ou|o/g, to:"o"}, // Au/O sound
+  {from:/ঋ|rri|ॠ|rree/g, to:"ri"}, 
+  
+  // ব্যঞ্জনবর্ণ (Consonants) - Improved Mappings
+  {from:/ক|খ|c|q|क|ख|ख़|kx/g, to:"k"}, 
+  {from:/গ|ঘ|g|gh|ग|घ/g, to:"g"}, 
+  {from:/চ|ছ|cch|chh|ch|च|छ/g, to:"c"}, 
+  {from:/জ|ঝ|z|j|ज|झ|zh/g, to:"j"}, 
+  {from:/ট|ঠ|t|th|ट|ठ/g, to:"t"}, // T, Th for retroflex T
+  {from:/ড|ঢ|d|dh|ड|ढ|dd/g, to:"d"}, // D, Dh for retroflex D
+  {from:/ত|থ|thh|त|थ/g, to:"t"}, // T, Th for dental T
+  {from:/দ|ধ|dhh|द|ध/g, to:"d"}, // D, Dh for dental D
+  {from:/ন|ণ|n|न|ण/g, to:"n"}, 
+  {from:/প|ফ|p|ph|f|प|फ/g, to:"p"}, 
+  {from:/ব|ভ|v|ब|भ/g, to:"b"}, // B and V mapped to B (common phonetic error)
+  {from:/ম|m|म/g, to:"m"}, 
+  {from:/য|y|য়|य|y|j/g, to:"y"}, // J/Y phonetic fix
+  {from:/র|ড়|ঢ়|r|rh|र/g, to:"r"}, 
+  {from:/ল|l|ल/g, to:"l"}, 
+  {from:/স|শ|ষ|s|x|sh|ch|श|ष|स/g, to:"s"}, // All S-sounds to 's'
+  {from:/হ|h|ह/g, to:"h"}, 
+  {from:/ঞ|ং|ঁ|n|m|ञ|ङ|ण|nn/g, to:"n"}, // Nasal sounds to 'n'
+  
+  // অন্যান্য সিম্বল ও অতিরিক্ত ভাষা সমর্থন
+  {from:/ñ|é|è|ë|á|à|ä|í|ì|ï|ú|ù|ü|ó|ò|ö|ç|æ|œ/g, to:"a"}, // Latin extended characters
+  {from:/্|ঁ/g, to:""}, // হসন্ত, চন্দ্রবিন্দু remove
+  {from:/।|,|।।|\-|\.|\?|!/g, to:""} // দাঁড়ি, কমা, ও বিরাম চিহ্ন remove
+];
+
+
+function smartNormalize(text) {
+  if(!text) return "";
+  let s = String(text).toLowerCase();
+  s = s.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  
+  // ⭐ এই ম্যাপটি এখন উন্নত মাল্টি-ল্যাঙ্গুয়েজ সাপোর্টের জন্য ফিক্সড
+  phoneticMap.forEach(m=>{ s = s.replace(m.from, m.to); });
+  
+  const fix = {"pasword":"password", "paswrd":"password", "gogle":"google", "fcebook":"facebook", "yutube":"youtube", "vidio":"video", "uplaod":"upload"};
+  for(let bad in fix){ s = s.replace(new RegExp(bad,"g"), fix[bad]); }
+  // non-alphanumeric cleanup
+  s = s.replace(/[ -⁯⸀-⹿!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~।٬،।]/g, " ");
+  s = s.replace(/\s+/g," ").trim();
+  return s;
+}
+
+const normalizedVideosData = videosData.map(v => ({
+    ...v,
+    keywords_normalized: smartNormalize(v.title + " " + v.desc + " " + v.keywords)
+}));
+
+const fuse = new Fuse(normalizedVideosData, {
+  includeScore: true,
+  threshold: 0.38,
+  keys: [
+    { name: "title", weight: 0.55 },
+    { name: "keywords_normalized", weight: 0.35 },
+    { name: "desc", weight: 0.10 }
+  ]
+});
+
+/* ============== highlight helper (unchanged) ============== */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+function highlightMatch(text, query) {
+  if(!query || !text) return text || "";
+  // split query words, highlight each
+  const parts = query.trim().split(/\s+/).filter(Boolean).map(q => escapeRegExp(q));
+  if(parts.length === 0) return text;
+  const re = new RegExp("(" + parts.join("|") + ")", "gi");
+  return String(text).replace(re, '<span class="match">$1</span>');
+}
+
+/* ============== search logic: AIsearch returns results (unchanged) ============== */
+function AIsearch(query){
+  let q = smartNormalize(query);
+  if(!q || q.trim().length === 0){
+    return videosData;
+  }
+  const resultsByNorm = fuse.search(q);
+  const resultsByQuery = fuse.search(query);
+  let uniqueResultsMap = new Map();
+  resultsByNorm.forEach(r => {
+      if(!uniqueResultsMap.has(r.item.youtubeId) || r.score < uniqueResultsMap.get(r.item.youtubeId).score) { 
+          uniqueResultsMap.set(r.item.youtubeId, r);
+      }
+  });
+  resultsByQuery.forEach(r => {
+      if(!uniqueResultsMap.has(r.item.youtubeId) || r.score < uniqueResultsMap.get(r.item.youtubeId).score) { 
+          uniqueResultsMap.set(r.item.youtubeId, r);
+      }
+  });
+  const finalResults = Array.from(uniqueResultsMap.values())
+      .sort((a, b) => a.score - b.score)
+      .map(r => r.item);
+  // If no results, still try fuzzy includes (very small matches) — include any whose normalized keywords include query tokens
+  if(finalResults.length === 0) {
+    const tokens = q.split(" ").filter(Boolean);
+    normalizedVideosData.forEach(v => {
+      for(const t of tokens) {
+        if(v.keywords_normalized.includes(t) || smartNormalize(v.title).includes(t) || smartNormalize(v.desc).includes(t)) {
+          if(!finalResults.includes(v)) finalResults.push(v);
+          break;
+        }
+      }
+    });
+  }
+  return finalResults;
+}
+
+/* ============== renderAll with highlight + single-click open (unchanged) ============== */
+function getThumbnailUrl(youtubeId) {
+    if (!youtubeId) return '';
+    return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+}
+
+function renderAll(list, currentQuery = '') {
+  const box = document.getElementById('videos');
+  const q = (currentQuery || "").trim();
+  let html = '';
+  if(!list || list.length===0){
+    html = `<div class="video-card visible"><p class="video-desc">No videos found for: <strong>${q}</strong></p></div>`;
+    document.getElementById("metaInfo").textContent = "0 videos";
+  } else {
+    document.getElementById("metaInfo").textContent = list.length + " videos";
+    list.forEach((v, idx) => {
+        const thumbnailUrl = getThumbnailUrl(v.youtubeId);
+        // use highlightMatch on title, desc, keywords (shows highlight in UI)
+        const titleHTML = highlightMatch(v.title, q);
+        const descHTML = highlightMatch(v.desc, q);
+        const seoHTML  = highlightMatch(v.keywords, q);
+        html += `
+          <div class="video-card" data-youtube-id="${v.youtubeId}" data-index="${idx}">
+            <h3 class="video-title">${titleHTML}</h3>
+            <p class="video-desc">${descHTML}</p>
+            <p class="seo">${seoHTML}</p>
+
+            <div class="video-placeholder" role="button"  aria-label="Play video: ${v.title}">
+                <img src="${thumbnailUrl}" alt="${v.title} thumbnail" loading="lazy">
+                <div class="play-button"></div>
+            </div>
+          </div>
+        `;
+    });
+  }
+  box.innerHTML = html;
+
+  // observe and add single-click open behavior: (এই অংশটি ডুপ্লিকেশন মুক্ত করা হয়েছে)
+  const cards = box.querySelectorAll('.video-card');
+  cards.forEach(card => {
+    observer.observe(card);
+    // if currentQuery exists and any match, add class for visual emphasis
+    if(q && (card.innerText.toLowerCase().includes(q.toLowerCase()))) {
+      card.classList.add('card-match');
+    } else {
+      card.classList.remove('card-match');
+    }
+
+    // ⭐ চূড়ান্ত সমাধান: একবার ক্লিক/ট্যাপ লজিক
+    card.addEventListener('click', function(e) {
+      e.preventDefault(); 
+      e.stopPropagation();
+
+      const placeholder = card.querySelector('.video-placeholder');
+      if(placeholder) {
+        // load iframe in place of placeholder
+        loadIframe(placeholder, card.getAttribute('data-youtube-id'));
+      }
+    });
+    // ⭐
+
+    // keyboard accessibility: Enter on placeholder will also open
+    const placeholder = card.querySelector('.video-placeholder');
+    if(placeholder) {
+      placeholder.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          loadIframe(placeholder, card.getAttribute('data-youtube-id'));
+        }
+      });
+    }
+  });
+}
+
+/* load iframe (autoplay) - (unchanged) */
+function loadIframe(placeholderEl, youtubeId) {
+    if(!youtubeId) return;
+    // prevent double insertion
+    if(placeholderEl.tagName && placeholderEl.tagName.toLowerCase() === 'iframe') return;
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`;
+    iframe.className = 'video-frame';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    placeholderEl.parentNode.replaceChild(iframe, placeholderEl);
+}
+
+/* IntersectionObserver for animation - (unchanged) */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{ threshold:0.2 });
+
+/* ============== search & UI wiring (debounce + loading) - (unchanged) ============== */
+function handleSearch(event, isLiveInput = false) {
+  if (event) event.preventDefault();
+  const input = document.getElementById("search");
+  const btn = document.getElementById("searchBtn");
+  const msg = document.getElementById("loadingMessage");
+  const val = input.value;
+
+  btn.classList.add('loading');
+  btn.textContent = '...';
+  msg.style.display = 'block';
+
+  setTimeout(() => {
+    if(!val || val.trim().length === 0) {
+      renderAll(videosData);
+    } else {
+      const results = AIsearch(val);
+      renderAll(results.length ? results : [], val);
+    }
+    btn.classList.remove('loading');
+    btn.textContent = '✓';
+    msg.style.display = 'none';
+    if (!isLiveInput) input.blur();
+  }, 120);
+}
+
+/* debounce live input - (unchanged) */
+let debounceTimer = null;
+const inputEl = document.getElementById("search");
+inputEl.addEventListener("input", function(e) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    handleSearch(null, true);
+  }, 250);
+});
+
+/* initial render - (unchanged) */
+renderAll(videosData);
+
+/* Back button helper (resets to home view) - ⭐ ফিক্সড */
+/* Back button helper (resets to home view) - ⭐ ফিক্সড */
+
+function goBackPerfect(){
+    // 1. Search box খালি করুন
+    const input = document.getElementById("search");
+    input.value = '';
+    
+    // 2. পুরো ভিডিও লিস্ট পুনরায় লোড করুন
+    handleSearch(null, false); 
+    
+    // 3. উপরে স্ক্রল করুন (পেজের একদম শুরুতে আসার জন্য)
+    document.documentElement.scrollTop = 0; // নির্ভরযোগ্য স্ক্রল টপ
+    document.body.scrollTop = 0; // পুরাতন ব্রাউজারের জন্য });
+}
+
+function goBackPerfect() {
+    // 1. Search box খালি করুন
+    const input = document.getElementById("search");
+    input.value = '';
+    
+    // 2. পুরো ভিডিও লিস্ট পুনরায় লোড করুন
+    handleSearch(null, false); 
+    
+    // 3. উপরে সার্চ বারের দিকে স্ক্রল করুন
+    const searchWrap = document.querySelector('.search-wrap');
+    if (searchWrap) {
+        searchWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        window.scrollTo({ top: 0, behavior: "instant" });
+    }
+}
+
+/* hide mobile keyboard on scroll - (unchanged) */
+document.addEventListener('scroll', function () {
+    if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
+        document.activeElement.blur();
+    }
+});
+
+
+
+/* Back button helper (keeps header visible) */
+function goBackPerfect() {
+    history.back();
+    window.scrollTo({ top: 0, behavior: "instant" });
+}
+
+
+
+</script>
+</body>
+</html>
