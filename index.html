@@ -589,6 +589,13 @@ renderAll(videosData);
 /* Back button helper (resets to home view) - ⭐ ফিক্সড */
 
 function goBackPerfect(){
+
+  /* Back button helper (keeps header visible) */
+function goBackPerfect() {
+    history.back();
+    window.scrollTo({ top: 0, behavior: "instant" });
+}
+  
     // 1. Search box খালি করুন
     const input = document.getElementById("search");
     input.value = '';
@@ -627,11 +634,6 @@ document.addEventListener('scroll', function () {
 
 
 
-/* Back button helper (keeps header visible) */
-function goBackPerfect() {
-    history.back();
-    window.scrollTo({ top: 0, behavior: "instant" });
-}
 
 
 
