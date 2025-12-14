@@ -645,31 +645,11 @@ window.addEventListener("load", () => {
 
 });
   
-/* Back button helper (resets to home view) - ⭐ ফিক্সড */
-/* Back button helper (resets to home view) - ⭐ ফিক্সড */
-
-function goBackPerfect(){
-
-  /* Back button helper (keeps header visible) */
+/* Back button helper (keeps header visible) */
 function goBackPerfect() {
     history.back();
     window.scrollTo({ top: 0, behavior: "instant" });
-}
-  
-    // 1. Search box খালি করুন
-    const input = document.getElementById("search");
-    input.value = '';
-    
-    // 2. পুরো ভিডিও লিস্ট পুনরায় লোড করুন
-    handleSearch(null, false); 
-    
-    // 3. উপরে স্ক্রল করুন (পেজের একদম শুরুতে আসার জন্য)
-    document.documentElement.scrollTop = 0; // নির্ভরযোগ্য স্ক্রল টপ
-    document.body.scrollTop = 0; // পুরাতন ব্রাউজারের জন্য });
-}
-
-function goBackPerfect() {
-    // 1. Search box খালি করুন
+        // 1. Search box খালি করুন
     const input = document.getElementById("search");
     input.value = '';
     
@@ -683,8 +663,9 @@ function goBackPerfect() {
     } else {
         window.scrollTo({ top: 0, behavior: "instant" });
     }
-}
+  }
 
+  
 /* hide mobile keyboard on scroll - (unchanged) */
 document.addEventListener('scroll', function () {
     if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
