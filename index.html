@@ -248,6 +248,25 @@
   font-weight:700;
 }
 
+
+
+
+
+  .video-actions{
+  margin-top:8px;
+  text-align:left;
+}
+
+.share-btn{
+  background:#eef3ff;
+  border:1px solid #c7d4ff;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
+  cursor:pointer;
+}
+  
+
 </style>
 
 
@@ -474,17 +493,33 @@ function renderAll(list, currentQuery = '') {
         const descHTML = highlightMatch(v.desc, q);
         const seoHTML  = highlightMatch(v.keywords, q);
         html += `
-          <div class="video-card" data-youtube-id="${v.youtubeId}" data-index="${idx}">
-            <h3 class="video-title">${titleHTML}</h3>
-            <p class="video-desc">${descHTML}</p>
-            <p class="seo">${seoHTML}</p>
+  <div class="video-card" data-youtube-id="${v.youtubeId}" data-index="${idx}">
 
-            <div class="video-placeholder" role="button"  aria-label="Play video: ${v.title}">
-                <img src="${thumbnailUrl}" alt="${v.title} thumbnail" loading="lazy">
-                <div class="play-button"></div>
-            </div>
-          </div>
-        `;
+    <h3 class="video-title">${titleHTML}</h3>
+
+    <!-- SEO Direct Link -->
+    <a class="video-direct-link" href="?v=${v.youtubeId}" style="display:none">
+      ${v.title}
+    </a>
+
+    <p class="video-desc">${descHTML}</p>
+    <p class="seo">${seoHTML}</p>
+
+    <div class="video-placeholder" role="button" aria-label="Play video: ${v.title}">
+      <img src="${thumbnailUrl}" alt="${v.title} thumbnail" loading="lazy">
+      <div class="play-button"></div>
+    </div>
+
+    <!-- Share Button -->
+    <div class="video-actions">
+      <button class="share-btn"
+        onclick="shareVideo('${v.youtubeId}', '${v.title}')">
+        🔗 Share
+      </button>
+    </div>
+
+  </div>
+`;
     });
   }
   box.innerHTML = html;
@@ -584,7 +619,32 @@ inputEl.addEventListener("input", function(e) {
 
 /* initial render - (unchanged) */
 renderAll(videosData);
+  
+// 🔥 URL থেকে ভিডিও ID নিয়ে Auto-play করার কোড
+window.addEventListener("load", () => {
 
+    const params = new URLSearchParams(window.location.search);
+    const videoId = params.get("v");   // ?v=XXXX
+
+    if (!videoId) return;
+
+    const video = videosData.find(v => v.youtubeId === videoId);
+    if (!video) return;
+
+    // শুধু ওই ভিডিওটাই রেন্ডার করবে
+    renderAll([video], video.title);
+
+    // অটোমেটিক চালু
+    setTimeout(() => {
+        const placeholder = document.querySelector(".video-placeholder");
+        if (placeholder) {
+            loadIframe(placeholder, videoId);
+            placeholder.scrollIntoView({ behavior: "smooth" });
+        }
+    }, 300);
+
+});
+  
 /* Back button helper (resets to home view) - ⭐ ফিক্সড */
 /* Back button helper (resets to home view) - ⭐ ফিক্সড */
 
@@ -634,6 +694,26 @@ document.addEventListener('scroll', function () {
 
 
 
+  
+function getVideoFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("v"); // youtubeId
+}
+function shareVideo(videoId, title){
+    const url = location.origin + location.pathname + "?v=" + videoId;
+
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: "এই ভিডিওটি দেখুন 👇",
+            url: url
+        });
+    } else {
+        navigator.clipboard.writeText(url);
+        alert("Link copied:\n" + url);
+    }
+                                   }
+  
 
 
 
