@@ -9,6 +9,104 @@
 
 <link rel="canonical" href="https://yourwebsite.com/index.html" />
 
+  <style>
+ফুল স্কিন প্লে ভিডিও। ব্যাক বাটন
+.video-post{
+  background:#fff;
+  border-radius:14px;
+  margin-bottom:22px;
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+}
+
+.video-thumb{
+  position:relative;
+}
+
+.video-thumb img{
+  width:100%;
+  display:block;
+}
+
+/* title on thumbnail */
+.video-title-overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  padding:10px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent);
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+}
+
+/* play icon */
+.play-icon{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:40px;
+  color:#fff;
+  opacity:.9;
+}
+
+/* fullscreen btn bottom */
+.fullscreen-btn{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  background:rgba(0,0,0,.7);
+  color:#fff;
+  border:none;
+  padding:8px;
+  border-radius:50%;
+  font-size:18px;
+}
+
+/* fullscreen overlay */
+.video-overlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:99999;
+}
+
+.video-overlay iframe{
+  width:100%;
+  height:100%;
+}
+
+/* back button */
+.close-btn{
+  position:absolute;
+  top:15px;
+  left:15px;
+  color:#fff;
+  font-size:18px;
+  background:#fa0088;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  z-index:2;
+}
+
+/* exit fullscreen */
+.exit-btn{
+  position:absolute;
+  bottom:20px;
+  right:20px;
+  color:#fff;
+  font-size:18px;
+  background:rgba(0,0,0,.6);
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  z-index:2;
+}
+  </style>
+  
 <style>
   :root{
     --accent:#0055ff;
@@ -493,32 +591,34 @@ function renderAll(list, currentQuery = '') {
         const descHTML = highlightMatch(v.desc, q);
         const seoHTML  = highlightMatch(v.keywords, q);
         html += `
-  <div class="video-card" data-youtube-id="${v.youtubeId}" data-index="${idx}">
+<div class="video-post">
+  <div class="video-thumb" onclick="openVideo('${v.youtubeId}')">
 
-    <h3 class="video-title">${titleHTML}</h3>
-
-    <!-- SEO Direct Link -->
-    <a class="video-direct-link" href="?v=${v.youtubeId}" style="display:none">
-      ${v.title}
-    </a>
-
-    <p class="video-desc">${descHTML}</p>
-    <p class="seo">${seoHTML}</p>
-
-    <div class="video-placeholder" role="button" aria-label="Play video: ${v.title}">
-      <img src="${thumbnailUrl}" alt="${v.title} thumbnail" loading="lazy">
-      <div class="play-button"></div>
+    <div class="video-title-overlay">
+      ${v.title.split(' ').slice(0,8).join(' ')}
     </div>
 
-    <!-- Share Button -->
-    <div class="video-actions">
-      <button class="share-btn"
-        onclick="shareVideo('${v.youtubeId}', '${v.title}')">
-        🔗 Share
-      </button>
-    </div>
+    <img src="${thumbnailUrl}" alt="${v.title}">
+    <div class="play-icon">▶</div>
 
+    <button class="fullscreen-btn"
+      onclick="event.stopPropagation(); openVideo('${v.youtubeId}')">
+      ⛶
+    </button>
   </div>
+  <div class="video-actions">
+    <button class="share-btn"
+      onclick="shareVideo('${v.youtubeId}','${v.title}')">
+      🔗 Share
+    </button>
+        
+  </div>
+
+  <!-- Google Ad placeholder -->
+  <div class="ad-box">
+    <!-- Google AdSense code here -->
+  </div>
+</div>
 `;
     });
   }
@@ -697,6 +797,62 @@ function shareVideo(videoId, title){
   
 
 
+
+
+  function playVideo(videoId){
+  const iframe = document.createElement("iframe");
+  iframe.src =`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  iframe.allow =
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+  iframe.allowFullscreen = true;
+
+  iframe.style.position = "fixed";
+  iframe.style.top = 0;
+  iframe.style.left = 0;
+  iframe.style.width = "100vw";
+  iframe.style.height = "100vh";
+  iframe.style.zIndex = 99999;
+  iframe.style.background = "#000";
+
+  iframe.onclick = () => iframe.remove();
+  document.body.appendChild(iframe);
+}
+
+
+
+
+
+/*___add.demo3___*/
+function openVideo(id){
+  overlay = document.createElement("div");
+  overlay.className = "video-overlay";
+
+  overlay.innerHTML = `
+    <button class="close-btn" onclick="closeVideo()">← Back</button>
+    <iframe
+      src="https://www.youtube.com/embed/${id}?autoplay=1&playsinline=0"
+      allow="autoplay; fullscreen"
+      allowfullscreen>
+    </iframe>
+    <button class="exit-btn" onclick="closeVideo()">⛶</button>
+  `;
+
+  document.body.appendChild(overlay);
+
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("landscape").catch(()=>{});
+  }
+}
+
+function closeVideo(){
+  if(overlay) overlay.remove();
+  if (screen.orientation && screen.orientation.unlock) {
+    screen.orientation.unlock();
+  }
+}
+
+
+  
 
 </script>
 </body>
