@@ -232,6 +232,70 @@
   /* small highlight effect for matched card */
   .card-match { border: 2px solid rgba(0,162,255,0.22); background: rgba(230,249,255,0.7); transition: background 400ms ease; }
 </style>
+  <style>
+.hidden{display:none}
+
+.video-overlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+}
+
+.overlay-ad{
+  background:#111;
+  padding:6px;
+}
+
+.overlay-top{
+  padding:10px;
+}
+
+.overlay-top button{
+  background:none;
+  color:#fff;
+  border:none;
+  font-size:18px;
+}
+
+.overlay-player{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+}
+
+.overlay-player iframe{
+  width:100%;
+  height:100%;
+}
+
+.overlay-controls{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+}
+
+.overlay-controls button{
+  background:none;
+  color:#fff;
+  border:none;
+  font-size:20px;
+}
+
+.overlay-list{
+  flex:1;
+  overflow-y:auto;
+  background:#111;
+}
+.overlay-list div{
+  padding:12px;
+  color:#fff;
+  border-bottom:1px solid #333;
+}
+  </style>
+  
 </head>
 <body>
  
