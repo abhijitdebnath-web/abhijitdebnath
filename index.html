@@ -8,8 +8,30 @@
 <meta name="description" content="Welcome to Abhijit Debnath's comprehensive platform! Find **expert Video Tutorials**, in-depth **Tech Guides**, and insightful content on **all trending topics** to boost your knowledge and skills instantly. Start learning today!" />
 
 <link rel="canonical" href="https://yourwebsite.com/index.html" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
+    .video-thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;   /* 🔥 জুম না করে ফিট করবে */
+  touch-action: manipulation; /* 🔥 double-tap zoom বন্ধ */
+  user-select: none;
+  -webkit-user-drag: none;
+    }
+    .video-thumb,
+.video-placeholder{
+  overflow:hidden;
+  transform: translateZ(0); /* GPU fix */
+  touch-action: manipulation;
+}
+    .video-overlay iframe,
+.video-frame{
+  width:100%;
+  height:100%;
+  border:0;
+  object-fit: contain; /* 🔥 ভিডিও কাটা/জুম হবে না */
+}
+    
 ফুল স্কিন প্লে ভিডিও। ব্যাক বাটন
 .video-post{
   background:#fff;
@@ -465,6 +487,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 <script>
+  src="https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&rel=0"
 /* ================== YOUR VIDEO LIST =================== */
 const videosData = [
 
