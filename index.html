@@ -469,16 +469,15 @@ document.addEventListener("click", function(e) {
 </div>
 
 <style>
-#youtube-row{
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin:20px 0;
-  flex-wrap:wrap;
+#youtube-row {
+  display: flex;
+  justify-content: center; /* বাটনগুলো মাঝখানে থাকবে */
+  align-items: center;
+  gap: 10px;               /* দুই বাটনের মাঝখানের ফাঁকা জায়গা */
+  margin: 20px 0;
+  flex-wrap: nowrap;       /* এটি নিশ্চিত করবে যেন বাটনগুলো এক লাইনেই থাকে */
 }
+  
 
 #yt-box-visit{text-align:center;animation: floatMove 2s infinite ease-in-out;}
 @keyframes floatMove{
