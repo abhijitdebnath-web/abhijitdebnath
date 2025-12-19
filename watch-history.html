@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
-<meta charset="UTF-8">
-<title>Watch History</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Watch History</title>
+  ... বাকি কোড
 </head>
-
-
+  
 
 <body>
 <canvas id="rainCanvas"></canvas>
@@ -130,6 +132,22 @@ function saveWatchHistory(video){
 
 </script>
 <style>
+  /* মোবাইল রেসপন্সিভ করার জন্য */
+@media (max-width: 600px) {
+  .history-thumb {
+    width: 120px; /* মোবাইলে থাম্বনেইল একটু ছোট রাখা ভালো */
+    height: 70px;
+  }
+  .animated-title {
+    font-size: 20px; /* টাইটেল একটু বড় দেখাবে */
+  }
+  .history-title {
+    font-size: 14px;
+  }
+}
+
+
+  
 #rainCanvas{
   position: fixed;
   inset: 0;
