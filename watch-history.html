@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>Watch History</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+
+
+<body>
+<canvas id="rainCanvas"></canvas>
+
+<header class="top-bar">
+  <button onclick="goHome()" >⬅</button>
+  <div class="header-titles">
+      <h3 class="animated-title">Watch History</h3>
+      <p class="signature-text">ABHIJIT DEBNATH</p> 
+  </div>
+  <button onclick="clearAll()">Clear</button>
+</header>
+
+
+<div id="historyList" class="history-list"></div>
+
+<script src="history.js"></script>
+<script>
+const list = document.getElementById('historyList');
+
+function loadHistory(){
+  let history = JSON.parse(localStorage.getItem('watchHistory')) || [];
+
+  if(history.length === 0){
+    list.innerHTML = '<p class="empty">No watch history</p>';
+    return;
+  }
+
+  list.innerHTML = '';
+  history.forEach((v,i)=>{
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    div.innerHTML = `
+      <div>
+        <strong>${v.title}</strong>
+        <small>${v.time}</small>
+      </div>
+      <button onclick="deleteOne(${i})">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function deleteOne(i){
+  let history = JSON.parse(localStorage.getItem('watchHistory')) || [];
+  history.splice(i,1);
+  localStorage.setItem('watchHistory', JSON.stringify(history));
+  loadHistory();
+}
+
+function clearAll(){
+  if(confirm('Clear all watch history?')){
+    localStorage.removeItem('watchHistory');
+    loadHistory();
+  }
+}
+
+function goHome(){  
+
+location.href = 'index.html';
+}
+
+// Back Button Control (YouTube style)
+window.addEventListener('popstate',()=>{
+  goHome();
+});
+
+history.pushState({},'','');
+
+loadHistory();
+
+
+
+function loadHistory(){
+  let history = JSON.parse(localStorage.getItem('watchHistory')) || [];
+
+  if(history.length === 0){
+    list.innerHTML = '<p class="empty">No watch history</p>';
+    return;
+  }
+
+  list.innerHTML = '';
+  history.forEach((v,i)=>{
+    const div = document.createElement('div');
+    div.className = 'history-item';
+
+    div.innerHTML = `
+<a href="index.html?v=${v.id}" class="history-link-container"> 
+
+        <img src="${v.thumb}" class="history-thumb">
+
+        <div class="history-info">
+          <div class="history-title">${v.title}</div>
+          <div class="history-time">${v.time}</div>
+        </div>
+      </a>
+
+      <button class="delete-btn" onclick="deleteOne(${i})">✕</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+
+function saveWatchHistory(video){
+  let history = JSON.parse(localStorage.getItem("watchHistory")) || [];
+
+  history = history.filter(v => v.url !== video.url);
+
+  history.unshift({
+    title: video.title,
+    thumb: video.thumb,
+    url: video.url,   // 🔥 এই লাইনের জন্যই ক্লিক কাজ করে
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("watchHistory", JSON.stringify(history));
+}
+
+
+</script>
+<style>
+#rainCanvas{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle at top, #1b1b1b, #050505);
+}
+
+/* আপনার <style> ব্লকের শেষে এটি যুক্ত করুন */
+.history-link-container {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#f9f9f9;
+}
+
+.mini-nav{
+  display:flex;
+  gap:15px;
+  padding:10px;
+  background:#fff;
+  box-shadow:0 1px 5px rgba#00f7f2;
+}
+
+.mini-nav a{
+  text-decoration:none;
+  color:#000;
+  font-weight:500;
+}
+
+.video{
+  padding:15px;
+  margin:10px;
+  background:#fff;
+  border-radius:8px;
+  box-shadow:0 2px 5px rgba#0ef700;
+}
+
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  background:#fff;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.top-bar button{
+  border:none;
+  background:none;
+  font-size:16px;
+}
+
+.history-list{
+  padding:10px;
+}
+
+.history-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#fff;
+  margin-bottom:10px;
+  padding:12px;
+  border-radius:8px;
+}
+
+.history-item small{
+  display:block;
+  color:#777;
+}
+
+.history-item button{
+  border:none;
+  background:none;
+  font-size:18px;
+  color:red;
+}
+
+.empty{
+  text-align:center;
+  margin-top:40px;
+  color:#888;
+}
+
+
+.history-item{
+  display:flex;
+  gap:12px;
+  background:#fff;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:10px;
+  align-items:flex-start;
+}
+
+.history-thumb{
+  width:120px;
+  height:70px;
+  object-fit:cover;
+  border-radius:8px;
+  flex-shrink:0;
+}
+
+.history-info{
+  flex:1;
+}
+
+.history-title{
+  font-size:15px;
+  font-weight:500;
+  line-height:1.3;
+}
+
+.history-time{
+  font-size:12px;
+  color:#777;
+  margin-top:4px;
+}
+
+.delete-btn{
+  border:none;
+  background:none;
+  font-size:18px;
+  color:#e53935;
+}
+</style>
+
+<style>
+
+/* ⭐⭐ ব্যাকগ্রাউন্ড রেইন/পার্টিকেল এফেক্ট (ভিডিওর মতো) ⭐⭐ */
+:root {
+  --rain-color: #f0ff1c;
+  --accent-color: #ff1cbb;
+  --bg-color: #111111;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-color); 
+  color: #f0ff1c;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* ভিডিওতে দেখা বৃষ্টির মত গ্রিড/পার্টিকেল এফেক্ট */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 1px, #1a1a1a 1px, #1a1a1a 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 1px, #1a1a1a 1px, #1a1a1a 40px);
+  background-size: 40px 40px;
+  animation: bg-scroll 60s linear infinite; /* ধীরে স্ক্রল করার অ্যানিমেশন */
+}
+
+/* রেইন এফেক্টের স্লো স্ক্রল অ্যানিমেশন */
+@keyframes bg-scroll {
+  from { background-position: 0 0; }
+  to { background-position: 4000px 4000px; }
+}
+
+/* ⭐⭐ গ্রেডিয়েন্ট টেক্সট কালার অ্যানিমেশন (MERN Stack এর মতো) ⭐⭐ */
+@keyframes colorShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-title {
+  /* Watch History টাইটেলের গ্রেডিয়েন্ট */
+  font-size: 18px;
+  margin: 0;
+  background: linear-gradient(45deg, #00BCD4, #FF0099, #00FFC2); 
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorShift 5s ease-in-out infinite;
+}
+
+.header-titles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ⭐⭐ ABHIJIT DEBNATH লেখার ম্যাজিক আন্ডারলাইন ⭐⭐ */
+.signature-text {
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 2px;
+    color: #f0f0f0;
+    position: relative;
+    display: inline-block;
+}
+
+.signature-text:after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 1.5px;
+    background: #FF0099; /* ম্যাজিক আন্ডারলাইন কালার */
+    transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    animation: underlineGrow 3s ease-in-out infinite alternate; /* অ্যানিমেট করতে থাকবে */
+}
+
+@keyframes underlineGrow {
+    0% { width: 0%; }
+    100% { width: 80%; }
+}
+
+
+/* টপ বার এবং সাধারণ স্টাইল */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 12px;
+  background: rgba(17, 17, 17, 0.9); /* গাঢ় স্বচ্ছ ব্যাকগ্রাউন্ড */
+  backdrop-filter: blur(10px); 
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.top-bar button {
+  background: none;
+  border: none;
+  color: var(--accent-color); 
+  font-size: 16px;
+  padding: 5px 10px;
+  transition: transform 0.2s;
+}
+.top-bar button:hover {
+  transform: scale(1.1);
+}
+
+/* হিস্টোরি লিস্ট ও আইটেম */
+.history-list {
+  padding: 10px;
+}
+
+.history-item {
+  display: flex;
+  gap: 12px;
+  background: #2a2a2a; 
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  align-items: flex-start;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.history-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
+}
+
+.history-link-container {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+.history-thumb {
+  width: 140px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.history-info {
+  flex: 1;
+}
+
+.history-title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.history-time {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.delete-btn {
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: #ff5252;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.empty {
+  text-align: center;
+  margin-top: 40px;
+  color: #777;
+}
+</style>
+
+
+
+<script>
+const canvas = document.getElementById("rainCanvas");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+// 🌧️ Rain particles
+const drops = [];
+const dropCount = 180;
+
+for(let i=0;i<dropCount;i++){
+  drops.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    len: Math.random()*20+10,
+    speed: Math.random()*4+2,
+    opacity: Math.random()*0.5+0.2
+  });
+}
+
+function drawRain(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  for(let d of drops){
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(0,255,200,${d.opacity})`;
+    ctx.lineWidth = 1;
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x, d.y + d.len);
+    ctx.stroke();
+
+    d.y += d.speed;
+
+    if(d.y > canvas.height){
+      d.y = -20;
+      d.x = Math.random()*canvas.width;
+    }
+  }
+
+  requestAnimationFrame(drawRain);
+}
+
+drawRain();
+</script>
+</body>
+</html>
