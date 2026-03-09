@@ -837,8 +837,8 @@ function renderAll(list, currentQuery = '') {
         const titleHTML = highlightMatch(v.title, q);
         const descHTML = highlightMatch(v.desc, q);
         const seoHTML  = highlightMatch(v.keywords, q);
-html += `
-<div class="video-post">
+
+html += `<div class="video-post show" style="opacity:1; transform:none;">`; 
  <div class="video-thumb"
      onclick="openVideo('${v.youtubeId}', '${v.title.replace(/'/g,"")}')">
 
